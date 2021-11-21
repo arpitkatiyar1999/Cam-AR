@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/about_app"
+        android:title="Info"
+        android:menuCategory="secondary"
+        android:icon="@drawable/ic_info"
+        app:showAsAction="always"></item>
+    <item android:id="@+id/from_storage"
+        android:title="Upload From Gallery"
+        android:menuCategory="secondary"
+        android:icon="@drawable/ic_from_storage"
+        app:showAsAction="always"></item>
+    <item android:id="@+id/logout"
+        android:menuCategory="secondary"
+        android:title="Logout"></item>
+    <item android:id="@+id/delete_account"
+        android:menuCategory="secondary"
+        android:title="Delete Account"></item>
+</menu>

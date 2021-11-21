@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "375542732265",
+    "project_id": "cam-ar-e7e1a",
+    "storage_bucket": "cam-ar-e7e1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375542732265:android:d2e5a7fb98430988e06778",
+        "android_client_info": {
+          "package_name": "com.example.camar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "375542732265-tcd2p05n0ggj08bbjumna10c447s2v6e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHAfDEB7QjZZVol7kXJPDNRReY0P7wLcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "375542732265-tcd2p05n0ggj08bbjumna10c447s2v6e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

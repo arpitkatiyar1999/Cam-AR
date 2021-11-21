@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Cam AR</string>
+    <string name="message_signup">We will send you an OTP on the given mobile number</string>
+    <string name="resend_otp_again">
+        <u>RESEND OTP AGAIN</u>
+    </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_features"></string>
+</resources>
