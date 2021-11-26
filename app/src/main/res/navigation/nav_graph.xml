@@ -41,6 +41,7 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:destination="@id/cameraFragment" />
+      
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -105,4 +106,5 @@
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right"
         app:popUpToInclusive="true" />
+
 </navigation>

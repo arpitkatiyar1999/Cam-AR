@@ -1,5 +1,6 @@
 package com.example.camar;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,30 +16,50 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.camar.Adapters.PhotoAdapter;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GalleryFragment extends Fragment {
     private NavDirections action;
-    private FirebaseStorage firebaseStorage;
-    private FirebaseDatabase firebaseDatabase;
     private NavController navController;
     private AlertDialog dialog;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+    private StorageReference storageReference;
+    private ChildEventListener childEventListener;
+    private ArrayList<String> images ;
+    private PhotoAdapter adapter;
+    private RecyclerView recyclerView;
     private ActivityResultLauncher<String> launcher;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +67,15 @@ public class GalleryFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_gallery, container, false);
         FloatingActionButton cameraLaunch=view.findViewById(R.id.camera_launch);
         navController= Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
+        recyclerView=view.findViewById(R.id.recycler_view);
+        images=new ArrayList<>();
+        adapter=new PhotoAdapter(images,getContext());
+        recyclerView.setAdapter(adapter);
+        GridLayoutManager gridLayoutManager=new GridLayoutManager(getContext(),2);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        firebaseAuth=FirebaseAuth.getInstance();
+        databaseReference=FirebaseDatabase.getInstance().getReference(firebaseAuth.getCurrentUser().getUid());
+        storageReference=FirebaseStorage.getInstance().getReference(firebaseAuth.getCurrentUser().getUid());
         cameraLaunch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,18 +83,70 @@ public class GalleryFragment extends Fragment {
                 navController.navigate(action);
             }
         });
+        onDatabaseDataChanges();
         setHasOptionsMenu(true);
         return view;
     }
 
+    private void onDatabaseDataChanges() {
+        childEventListener=new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                String imageUrl=snapshot.getValue(String.class);
+                images.add(imageUrl);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        databaseReference.addChildEventListener(childEventListener);
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        firebaseStorage=FirebaseStorage.getInstance();
         launcher=registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri result) {
-                final StorageReference reference=firebaseStorage.getReference();
+                if(result!=null) {
+                    final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                    progressDialog.setTitle("Uploading Image");
+                    progressDialog.setMessage("Please Wait A Moment");
+                    progressDialog.show();
+                    final StorageReference fileRef=storageReference.child(result.getLastPathSegment());
+                    UploadTask uploadTask=fileRef.putFile(result);
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            progressDialog.dismiss();
+                            databaseReference.child(result.getLastPathSegment()).setValue(uri.toString());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
             }
         });
         super.onViewCreated(view, savedInstanceState);
