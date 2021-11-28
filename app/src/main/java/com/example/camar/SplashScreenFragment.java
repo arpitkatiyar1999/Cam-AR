@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SplashScreenFragment extends Fragment {
-    private Boolean login=false;
     NavDirections action;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.camar.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -27,9 +28,9 @@ import java.util.concurrent.TimeUnit;
 public class SignupFragment extends Fragment {
     private EditText editNumber;
     private CountryCodePicker picker;
-    private String countryCode="+91";
+    private String countryCode;
     private String phoneNumber;
-    private Button getOtp;
+    private FloatingActionButton getOtp;
     private ProgressBar progressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,6 +40,7 @@ public class SignupFragment extends Fragment {
         picker=view.findViewById(R.id.country_code);
         getOtp=view.findViewById(R.id.get_otp);
         progressBar=view.findViewById(R.id.progress);
+        countryCode=picker.getSelectedCountryCodeWithPlus();
         picker.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
             @Override
             public void onCountrySelected() {

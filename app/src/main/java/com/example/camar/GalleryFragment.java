@@ -131,21 +131,35 @@ public class GalleryFragment extends Fragment {
                     progressDialog.setMessage("Please Wait A Moment");
                     progressDialog.show();
                     final StorageReference fileRef=storageReference.child(result.getLastPathSegment());
-                    UploadTask uploadTask=fileRef.putFile(result);
-                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    fileRef.putFile(result).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(Uri uri) {
-                            progressDialog.dismiss();
-                            databaseReference.child(result.getLastPathSegment()).setValue(uri.toString());
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    databaseReference.child(result.getLastPathSegment()).setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getContext(),"Image Uploaded Successfully",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getContext(),"Error Occurred while uploading image to database",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(getContext(),"Error Occurred while uploading image to storage",Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     });
-
                 }
             }
         });

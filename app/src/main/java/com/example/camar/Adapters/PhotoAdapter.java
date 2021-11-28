@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.camar.R;
 
 import java.util.ArrayList;
@@ -37,7 +38,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.viewHolder>{
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         String imageUri= data.get(position);
-        Glide.with(context).load(Uri.parse(imageUri)).into(holder.photo);
+        Glide
+                .with(context)
+                .load(Uri.parse(imageUri))
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .into(holder.photo);
     }
 
     @Override
