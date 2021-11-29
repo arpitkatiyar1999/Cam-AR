@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_top_70">70dp</dimen>
+    <dimen name="otp_verification_margin_top">15dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
+    <dimen name="medium_text_size">16sp</dimen>
+    <dimen name="padding_12">12dp</dimen>
+    <dimen name="margin_22">22dp</dimen>
+    <dimen name="progress_dimension">40dp</dimen>
+    <dimen name="floating_action_dimension">60dp</dimen>
+    <dimen name="image_dimension">130dp</dimen>
+</resources>
