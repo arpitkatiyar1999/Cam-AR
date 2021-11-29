@@ -122,6 +122,7 @@ public class GalleryFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         launcher=registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri result) {
@@ -163,7 +164,7 @@ public class GalleryFragment extends Fragment {
                 }
             }
         });
-        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override

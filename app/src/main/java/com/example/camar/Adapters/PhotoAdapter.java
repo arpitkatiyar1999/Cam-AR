@@ -13,12 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.camar.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.viewHolder>{
     private ArrayList<String> data;
@@ -37,12 +36,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.viewHolder>{
     }
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        String imageUri= data.get(position);
-        Glide
-                .with(context)
-                .load(Uri.parse(imageUri))
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .into(holder.photo);
+        String imageUri = data.get(position);
+        Picasso
+                .get()
+                .load(Uri.parse(imageUri)).into(holder.photo);
     }
 
     @Override

@@ -19,36 +19,47 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SplashScreenFragment extends Fragment {
     NavDirections action;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.fragment_splash_screen, container, false);
+        View view = inflater.inflate(R.layout.fragment_splash_screen, container, false);
+        //provide delay to screen
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                //get current user
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user!=null)
-                    action=SplashScreenFragmentDirections.actionSplashScreenFragmentToGalleryFragment();
+                //check user login
+                if (user != null)
+                    //Navigate to Gallery
+                    action = SplashScreenFragmentDirections.actionSplashScreenFragmentToGalleryFragment();
                 else
-                    action=SplashScreenFragmentDirections.actionSplashScreenFragmentToSignupFragment();
+                    //Navigate to login Screen
+                    action = SplashScreenFragmentDirections.actionSplashScreenFragmentToSignupFragment();
                 Navigation.findNavController(view).navigate(action);
             }
-        },1200);
+        }, 1200);
         return view;
     }
 
     @Override
     public void onResume() {
-        ((MainActivity)getActivity()).getSupportActionBar().hide();
         super.onResume();
+        //Hide Action Bar
+        ((MainActivity) getActivity()).getSupportActionBar().hide();
+
     }
 
     @Override
     public void onDestroy() {
-        ((MainActivity)getActivity()).getSupportActionBar().show();
+        super.onDestroy();
+        //Show Action Bar
+        ((MainActivity) getActivity()).getSupportActionBar().show();
+        //Change color of status bar from white to blue
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#006680"));
-        super.onDestroy();
+
     }
 }
