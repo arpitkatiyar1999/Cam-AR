@@ -1,5 +1,6 @@
 package com.example.camar.LoginFragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -278,6 +280,8 @@ public class VerifySignupFragment extends Fragment implements OnCompleteListener
             //navigate to gallery
             NavDirections action = VerifySignupFragmentDirections.actionVerifySignupFragmentToGalleryFragment();
             Navigation.findNavController(getView()).navigate(action);
+            Toast.makeText(getContext(),"Welcome "+number,Toast.LENGTH_SHORT).show();
+            hideKeyboard();
         } else {
             //otp not verified
             progressBar.setVisibility(View.INVISIBLE);
@@ -285,6 +289,15 @@ public class VerifySignupFragment extends Fragment implements OnCompleteListener
             Toast.makeText(getContext(), "Invalid OTP!!!", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     private void timer()
     {
         //convert time to milliseconds

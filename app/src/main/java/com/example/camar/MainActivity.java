@@ -14,6 +14,15 @@ public class MainActivity extends AppCompatActivity {
     //creating only a single instance of firebase api
     private FirebaseAPI firebaseAPI;
 
+    public static boolean getIsPhotoClicked() {
+        return isPhotoClicked;
+    }
+
+    public static void setIsPhotoClicked(boolean isPhotoClicked) {
+        MainActivity.isPhotoClicked = isPhotoClicked;
+    }
+
+    public static boolean isPhotoClicked=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -92,6 +92,7 @@ public class CameraFragment extends Fragment {
                             @Override
                             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                                 captureImage();
+                                MainActivity.setIsPhotoClicked(true);
                             }
 
                             @Override

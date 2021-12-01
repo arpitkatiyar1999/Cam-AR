@@ -1,6 +1,8 @@
 package com.example.camar;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -24,6 +26,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.camar.Adapters.PhotoAdapter;
@@ -34,8 +38,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -45,7 +47,7 @@ public class GalleryFragment extends Fragment {
     private AlertDialog dialog;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-    private StorageReference storageReference;
+    private ProgressDialog uploadDialog,loadingDialog;
     private ChildEventListener childEventListener;
     private ArrayList<String> images ;
     private PhotoAdapter adapter;
@@ -56,16 +58,19 @@ public class GalleryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_gallery, container, false);
         FloatingActionButton cameraLaunch=view.findViewById(R.id.camera_launch);
+        uploadDialog=new ProgressDialog(getContext());
+        uploadDialog.setTitle("Uploading Image");
+        uploadDialog.setMessage("Please Wait a Moment");
+        uploadDialog.setCancelable(false);
+        images=new ArrayList<>();
         navController= Navigation.findNavController(getActivity(),R.id.nav_host_fragment);
         recyclerView=view.findViewById(R.id.recycler_view);
-        images=new ArrayList<>();
         adapter=new PhotoAdapter(images,getContext());
         recyclerView.setAdapter(adapter);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(getContext(),2);
         recyclerView.setLayoutManager(gridLayoutManager);
         firebaseAuth=FirebaseAuth.getInstance();
         databaseReference=FirebaseDatabase.getInstance().getReference(firebaseAuth.getCurrentUser().getUid());
-        storageReference=FirebaseStorage.getInstance().getReference(firebaseAuth.getCurrentUser().getUid());
         cameraLaunch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,6 +90,7 @@ public class GalleryFragment extends Fragment {
                 String imageUrl=snapshot.getValue(String.class);
                 images.add(imageUrl);
                 adapter.notifyDataSetChanged();
+                uploadDialog.dismiss();
             }
 
             @Override
@@ -117,37 +123,8 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onActivityResult(Uri result) {
                 if(result!=null) {
+                    uploadDialog.show();
                     ((MainActivity)getActivity()).getFirebaseAPI().storeImageToFirebase(result);
-//                    final StorageReference fileRef=storageReference.child(result.getLastPathSegment());
-//                    fileRef.putFile(result).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                                @Override
-//                                public void onSuccess(Uri uri) {
-//                                    databaseReference.child(result.getLastPathSegment()).setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void unused) {
-//                                            progressDialog.dismiss();
-//                                            Toast.makeText(getContext(),"Image Uploaded Successfully",Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }).addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            progressDialog.dismiss();
-//                                            Toast.makeText(getContext(),"Error Occurred while uploading image to database",Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    });
-//                                }
-//                            }).addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    progressDialog.dismiss();
-//                                    Toast.makeText(getContext(),"Error Occurred while uploading image to storage",Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-//                        }
-//                    });
                 }
             }
         });
@@ -191,6 +168,8 @@ public class GalleryFragment extends Fragment {
                         FirebaseAuth.getInstance().signOut();
                         Toast.makeText(getContext(),"Logged Out Successfully",Toast.LENGTH_SHORT).show();
                         Navigation.findNavController(getView()).navigate(R.id.action_global_signupFragment);
+                        images.clear();
+                        databaseReference.removeEventListener(childEventListener);
 
                     }
                 }).setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -199,13 +178,11 @@ public class GalleryFragment extends Fragment {
                         dialog.dismiss();
                     }
                 }).create();
-        databaseReference.removeEventListener(childEventListener);
         dialog.show();
     }
     private void selectFromStorage()
     {
         launcher.launch("image/*");
     }
-
 
 }
