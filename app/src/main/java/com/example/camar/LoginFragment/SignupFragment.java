@@ -9,15 +9,14 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.camar.MainActivity;
 import com.example.camar.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -54,10 +53,11 @@ public class SignupFragment extends Fragment {
         getOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //check the number is given by user or not
+                //get Number
                 phoneNumber = editNumber.getText().toString().trim();
+                //check the number is given by user or not
                 if (phoneNumber.matches(""))
-                    Toast.makeText(getContext(), "Please Enter A Mobile Number", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please Enter A Valid Mobile Number", Toast.LENGTH_SHORT).show();
                 else
                     //send otp to given number
                     sendOTP();
@@ -70,11 +70,7 @@ public class SignupFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         getOtp.setVisibility(View.INVISIBLE);
         //get Firebase authentication  instance
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        PhoneAuthOptions options = PhoneAuthOptions.newBuilder(auth)
-                .setPhoneNumber(countryCode + phoneNumber)                      //Phone number to verify
-                .setTimeout(60L, TimeUnit.SECONDS)                    // Timeout and unit
-                .setActivity(getActivity())
+        PhoneAuthOptions options = ((MainActivity)getActivity()).getPhoneAuthOptionsBuilder(countryCode,phoneNumber,60L,TimeUnit.SECONDS)
                 //OnVerificationStateChangedCallbacks
                 .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     //if code sent successfully
@@ -82,7 +78,7 @@ public class SignupFragment extends Fragment {
                     public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         progressBar.setVisibility(View.GONE);
                         getOtp.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "Otp Sent Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "OTP Sent Successfully", Toast.LENGTH_SHORT).show();
                         //send verification id and phone number to VerifySignup Fragment
                         NavDirections action = SignupFragmentDirections.actionSignupFragmentToVerifySignupFragment(countryCode, phoneNumber, verificationId);
                         Navigation.findNavController(getView()).navigate(action);

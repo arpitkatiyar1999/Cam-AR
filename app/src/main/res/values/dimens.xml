@@ -10,4 +10,7 @@
     <dimen name="progress_dimension">40dp</dimen>
     <dimen name="floating_action_dimension">60dp</dimen>
     <dimen name="image_dimension">130dp</dimen>
+    <dimen name="floating_right_bottom_margin">20dp</dimen>
+    <dimen name="edit_otp_width">40dp</dimen>
+    <dimen name="edit_otp_height">46dp</dimen>
 </resources>

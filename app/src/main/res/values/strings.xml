@@ -10,4 +10,6 @@
     <string name="otp_verification">OTP Verification</string>
     <string name="please_enter_your_mobile_number">Please Enter Your Mobile Number</string>
     <string name="didn_t_receive_otp">Didn\'t receive OTP?</string>
+    <string name="features_text">Now capturing an 3-D image came into reality, user can tap on the screen to place a 3-D object, also one can capture the image and the image will be automatically stored to cloud.\nTo use these features one need to authenticate himself through mobile number.\n\nThe app has been best designed taking into the consideration of users security and privacy. \nUploading images to cloud is completely safe and secure and we are regularly working on it to give you much better experience.\n\nAny kind of inconvenience is regretted</string>
+    <string name="build_using_text">1) Navigation Component for app navigation \n2) Firebase Authentication for authenticating user\n3) Firebase Storage to store images\n4) Firebase Realtime Database for realtime update\n5) AR Core for building augmented reality experience\n6) Sceneform For rendering realistic 3-D scenes</string>
 </resources>

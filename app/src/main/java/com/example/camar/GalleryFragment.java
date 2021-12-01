@@ -1,6 +1,5 @@
 package com.example.camar;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,20 +22,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.camar.Adapters.PhotoAdapter;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,10 +36,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GalleryFragment extends Fragment {
     private NavDirections action;
@@ -127,40 +117,37 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onActivityResult(Uri result) {
                 if(result!=null) {
-                    final ProgressDialog progressDialog = new ProgressDialog(getContext());
-                    progressDialog.setTitle("Uploading Image");
-                    progressDialog.setMessage("Please Wait A Moment");
-                    progressDialog.show();
-                    final StorageReference fileRef=storageReference.child(result.getLastPathSegment());
-                    fileRef.putFile(result).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    databaseReference.child(result.getLastPathSegment()).setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(getContext(),"Image Uploaded Successfully",Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(getContext(),"Error Occurred while uploading image to database",Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(getContext(),"Error Occurred while uploading image to storage",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    });
+                    ((MainActivity)getActivity()).getFirebaseAPI().storeImageToFirebase(result);
+//                    final StorageReference fileRef=storageReference.child(result.getLastPathSegment());
+//                    fileRef.putFile(result).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                                @Override
+//                                public void onSuccess(Uri uri) {
+//                                    databaseReference.child(result.getLastPathSegment()).setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void unused) {
+//                                            progressDialog.dismiss();
+//                                            Toast.makeText(getContext(),"Image Uploaded Successfully",Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    }).addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            progressDialog.dismiss();
+//                                            Toast.makeText(getContext(),"Error Occurred while uploading image to database",Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    });
+//                                }
+//                            }).addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                    progressDialog.dismiss();
+//                                    Toast.makeText(getContext(),"Error Occurred while uploading image to storage",Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//                        }
+//                    });
                 }
             }
         });
@@ -180,9 +167,6 @@ public class GalleryFragment extends Fragment {
             case R.id.about_app:
                 action=NavGraphDirections.actionGlobalAboutAppFragment();
                 navController.navigate(action);
-                break;
-            case R.id.delete_account:
-                deleteAccount();
                 break;
             case R.id.logout:
                 logout();
@@ -215,37 +199,7 @@ public class GalleryFragment extends Fragment {
                         dialog.dismiss();
                     }
                 }).create();
-        dialog.show();
-    }
-
-    private void deleteAccount() {
-        dialog=new AlertDialog.Builder(getContext())
-                .setTitle("Delete Account")
-                .setIcon(R.drawable.ic_warning)
-                .setMessage("Your All Data Will Be Lost")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                        user.delete()
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getContext(),"User account deleted",Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                        Navigation.findNavController(getView()).navigate(R.id.action_global_signupFragment);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                     dialog.dismiss();
-                    }
-                }).create();
+        databaseReference.removeEventListener(childEventListener);
         dialog.show();
     }
     private void selectFromStorage()

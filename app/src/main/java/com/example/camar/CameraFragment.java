@@ -124,7 +124,8 @@ public class CameraFragment extends Fragment {
                         uri=saveBitmap(getContext(),bitmap, Bitmap.CompressFormat.PNG,"IMG",System.currentTimeMillis()+".jpg");
                         if(uri!=null)
                         {
-                            saveImage(uri);
+                            //saveImage(uri);
+                            ((MainActivity)getActivity()).getFirebaseAPI().storeImageToFirebase(uri);
                         }
                     }catch (Exception e)
                     {

@@ -12,9 +12,9 @@
         android:icon="@drawable/ic_from_storage"
         app:showAsAction="always"></item>
     <item android:id="@+id/logout"
+        android:icon="@drawable/ic_logout"
+        app:showAsAction="always"
         android:menuCategory="secondary"
         android:title="Logout"></item>
-    <item android:id="@+id/delete_account"
-        android:menuCategory="secondary"
-        android:title="Delete Account"></item>
+
 </menu>

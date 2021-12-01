@@ -13,12 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SplashScreenFragment extends Fragment {
-    NavDirections action;
+    private NavDirections action;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,7 +27,7 @@ public class SplashScreenFragment extends Fragment {
             @Override
             public void run() {
                 //get current user
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseUser user = ((MainActivity)getActivity()).getFireBaseUser();
                 //check user login
                 if (user != null)
                     //Navigate to Gallery

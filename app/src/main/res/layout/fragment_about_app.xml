@@ -3,11 +3,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:fillViewport="true"
+    android:padding="@dimen/padding_12"
     android:layout_height="match_parent"
     tools:context=".AboutAppFragment">
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:padding="10dp"
-        android:textSize="16sp"
-        android:layout_height="match_parent"></TextView>
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <TextView
+            android:text="Features"
+            style="@style/about_heading"></TextView>
+        <TextView
+            android:text="@string/features_text"
+            style="@style/about_text"></TextView>
+        <TextView
+            android:layout_marginTop="@dimen/margin_12"
+            style="@style/about_heading"
+            android:text="Build Using"></TextView>
+        <TextView
+            android:text="@string/build_using_text"
+            style="@style/about_text"></TextView>
+        <TextView
+            android:layout_marginTop="@dimen/margin_12"
+            android:text="Contact And Support"
+            style="@style/about_heading"></TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_phone"></ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:text="+91 7991806610"
+                android:layout_height="wrap_content"></TextView>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_email"></ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:text="arpitkatiyar2018@gmail.com"
+            android:layout_height="wrap_content"></TextView>
+    </LinearLayout>
+    </LinearLayout>
 </ScrollView>
